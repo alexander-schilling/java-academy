@@ -23,6 +23,8 @@ public class UsersController {
      */
     public static void setupUsers() { users = StorageService.getUsers(); }
 
+    public static void addUser(User user) { users.add(user); }
+
     public static List<User> getUsers() { return users; }
 
     /**
@@ -54,18 +56,79 @@ public class UsersController {
     }
 
     /**
-     * Answers the /users/login route with a JSON response representing an error or
-     * a User data with a generated authentication token.
+     * Answers the /users/register route with a JSON response representing an error
+     * or User data with a created User and a generated authentication token
+     * @param context Javalin http context
+     */
+    public static void Register(Context context) {
+        String username;
+        String password;
+        String passwordConfirmation;
+        String firstName;
+        String lastName;
+
+        // Check if body is properly formatted
+        try {
+            JSONObject body = new JSONObject(context.body());
+
+            username = body.getString("username");
+            password = body.getString("password");
+            passwordConfirmation = body.getString("passwordConfirmation");
+            firstName = body.getString("firstName");
+            lastName = body.getString("lastName");
+        } catch (Exception e) {
+            context.status(400);
+            return;
+        }
+
+        // Check if any field is blank
+        if (username.isBlank() || password.isBlank() || firstName.isBlank() || lastName.isBlank()) {
+            context.status(200)
+                    .json(ErrorManager.getJSONStringResponse(ErrorTypes.INVALID_VALUE));
+            return;
+        }
+
+        // Check if user already exists
+        User user = UsersController.getUserFromUsername(username);
+        if (user != null) {
+            context.status(200)
+                    .json(ErrorManager.getJSONStringResponse(ErrorTypes.USER_ALREADY_EXISTS));
+            return;
+        }
+
+        // Check if passwords are equal
+        if (!password.equals(passwordConfirmation)) {
+            context.status(200)
+                    .json(ErrorManager.getJSONStringResponse(ErrorTypes.PASSWORD_MISMATCH));
+            return;
+        }
+
+        // Create the new user
+        List<User> userList = UsersController.getUsers();
+        int userId = userList.size() + 1;
+        User userCreated = new User(userId, username, password, firstName, lastName);
+
+        // Add the new user to the list
+        UsersController.addUser(userCreated);
+
+        // Generate and set the authentication token
+        userCreated.setToken(TokenManager.generateToken());
+
+        context.status(200).json(UserBuilder.toPrivateJSONObject(userCreated).toString());
+    }
+
+    /**
+     * Answers the /users/login route with a JSON response representing an error
+     * or User data with a generated authentication token
      * @param context Javalin http context
      */
     public static void Login(Context context) {
-        JSONObject body;
         String username;
         String password;
 
         // Check if body is properly formatted
         try {
-            body = new JSONObject(context.body());
+            JSONObject body = new JSONObject(context.body());
 
             username = body.getString("username");
             password = body.getString("password");

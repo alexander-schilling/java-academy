@@ -6,5 +6,8 @@ package com.academy.configs;
  */
 public class ErrorTypes {
     public static String USER_NOT_FOUND = "user_not_found";
+    public static String USER_ALREADY_EXISTS = "user_already_exists";
     public static String INVALID_PASSWORD = "invalid_password";
+    public static String PASSWORD_MISMATCH = "password_mismatch";
+    public static String INVALID_VALUE = "invalid_value";
 }

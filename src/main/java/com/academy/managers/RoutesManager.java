@@ -23,6 +23,7 @@ public class RoutesManager {
 
     // users route
     private static void setupUsersRoutes() {
+        app.post("users/register", UsersController::Register);
         app.post("users/login", UsersController::Login);
     }
 
