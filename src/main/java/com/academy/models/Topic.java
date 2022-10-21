@@ -16,9 +16,7 @@ public class Topic {
         this.content = content;
     }
 
-    /**
-     * Getters & Setters
-     */
+    // START: Getters & Setters
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -37,4 +35,6 @@ public class Topic {
 
     public Course getCourse() { return course; }
     public void setCourse(Course course) { this.course = course; }
+
+    // END: Getters & Setters
 }

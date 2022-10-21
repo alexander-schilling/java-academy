@@ -18,6 +18,8 @@ public class User extends Person {
         this.token = token;
     }
 
+    // START: Getters & Setters
+
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
@@ -26,4 +28,6 @@ public class User extends Person {
 
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
+
+    // END: Getters & Setters
 }

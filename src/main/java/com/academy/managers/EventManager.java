@@ -6,7 +6,16 @@ import com.academy.controllers.UsersController;
 import com.academy.services.LoggerService;
 import io.javalin.event.EventListener;
 
+/**
+ * Handles Javalin lifecycle events.
+ * More info: <a href="https://javalin.io/documentation#lifecycle-events">Javalin lifecycle events</a>
+ * @author Alexander Schilling
+ */
 public class EventManager {
+    /**
+     * Setups handlers for each lifecycle event to be handled
+     * @param listener Javalin EventListener
+     */
     public static void setupEvents(EventListener listener) {
         listener.serverStarting(EventManager::handleStarting);
         listener.serverStarted(EventManager::handleStarted);

@@ -8,10 +8,22 @@ import com.academy.utils.RandomNumber;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles how everything is stored and serves the objects from the desired storage.
+ * Currently, it generates an established amount of courses and a random amount of
+ * topics for each course.
+ * @author Alexander Schilling
+ */
 public class StorageService {
+    // Number of courses to be created
     private static final int NUMBER_OF_COURSES = 10;
+    // Range of topics to be created for each course
     private static final int[] RANGE_OF_TOPICS = { 5, 15 };
 
+    /**
+     * Gets the courses, currently an established amount of objects with a simple identifier
+     * @return Course list
+     */
     public static List<Course> getCourses() {
         List<Course> courses = new ArrayList<>();
 
@@ -22,6 +34,10 @@ public class StorageService {
         return courses;
     }
 
+    /**
+     * Gets the topics, currently a random amount of objects for each course with sample data
+     * @return Topic list
+     */
     public static List<Topic> getTopics() {
         List<Topic> topics = new ArrayList<>();
 
@@ -40,6 +56,10 @@ public class StorageService {
         return topics;
     }
 
+    /**
+     * Gets the users, currently hard coded users with sample data
+     * @return User list
+     */
     public static List<User> getUsers() {
         List<User> users = new ArrayList<>();
 

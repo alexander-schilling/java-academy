@@ -16,6 +16,8 @@ public class UserTopic {
         this.isCompleted = isCompleted;
     }
 
+    // START: Getters & Setters
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -33,4 +35,6 @@ public class UserTopic {
 
     public Topic getTopic() { return topic; }
     public void setTopic(Topic topic) { this.topic = topic; }
+
+    // END: Getters & Setters
 }

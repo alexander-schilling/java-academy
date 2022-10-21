@@ -8,6 +8,10 @@ import org.json.JSONArray;
 
 import java.util.List;
 
+/**
+ * Controls app courses and routes logic
+ * @author Alexander Schilling
+ */
 public class CoursesController {
     private static List<Course> courses;
 
@@ -17,6 +21,10 @@ public class CoursesController {
 
     public static List<Course> getCourses() { return courses; }
 
+    /**
+     * @param id Course id
+     * @return Course found or null
+     */
     public static Course getCourseFromId(int id) {
         for (Course course : courses) {
             if (course.getId() == id) {
@@ -27,6 +35,10 @@ public class CoursesController {
         return null;
     }
 
+    /**
+     * Answers the /courses route with a JSON Array with each course
+     * @param context Javalin http context
+     */
     public static void Index(Context context) {
         JSONArray coursesJSON = new JSONArray();
 

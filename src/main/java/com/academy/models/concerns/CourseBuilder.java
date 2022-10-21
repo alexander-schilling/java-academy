@@ -5,7 +5,15 @@ import com.academy.models.Topic;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * This handles different types of responses for the Course object
+ * @author Alexander Schilling
+ */
 public class CourseBuilder {
+    /**
+     * @param course Course object
+     * @return JSONObject with id, identifier, topics array (each as a JSONObject)
+     */
     public static JSONObject toJSONObject(Course course) {
         JSONObject json = new JSONObject();
 

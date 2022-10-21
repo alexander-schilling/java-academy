@@ -6,15 +6,25 @@ import com.academy.services.StorageService;
 
 import java.util.List;
 
+/**
+ * Controls app topics and routes logic
+ * @author Alexander Schilling
+ */
 public class TopicsController {
     private static List<Topic> topics;
 
+    /**
+     * Gets topics froms storage and links each object to its relation
+     */
     public static void setupTopics() {
         topics = StorageService.getTopics();
 
         linkTopicCourses();
     }
 
+    /**
+     * For each topic, set its Course object and add it to the TopicCourse topics list
+     */
     private static void linkTopicCourses() {
         for (Topic topic : topics) {
             Course topicCourse = CoursesController.getCourseFromId(topic.getCourseId());
@@ -28,6 +38,10 @@ public class TopicsController {
 
     public static List<Topic> getTopics() { return topics; }
 
+    /**
+     * @param id Topic id
+     * @return Topic object or null
+     */
     public static Topic getTopicFromId(int id) {
         for (Topic topic : topics) {
             if (topic.getId() == id) {
