@@ -9,12 +9,16 @@ import java.util.List;
  */
 public class Course {
     private int id;
-    private String identifier;
+    private String title;
+    private String description;
+    private String imageUrl;
     private List<Topic> topics;
 
-    public Course(int id, String identifier) {
+    public Course(int id, String title, String description, String imageUrl) {
         this.id = id;
-        this.identifier = identifier;
+        this.title = title;
+        this.description = description;
+        this.imageUrl = imageUrl;
         this.topics = new ArrayList<>();
     }
 
@@ -23,9 +27,14 @@ public class Course {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getIdentifier() { return identifier; }
-    public void setIdentifier(String identifier) { this.identifier = identifier; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public List<Topic> getTopics() { return topics; }
     public void setTopics(List<Topic> topics) { this.topics = topics; }
     public void addTopic(Topic topic) { this.topics.add(topic); }

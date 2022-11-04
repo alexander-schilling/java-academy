@@ -30,5 +30,6 @@ public class RoutesManager {
     // courses route
     private static void setupCoursesRoutes() {
         app.get("/courses", CoursesController::Index);
+        app.get("/courses/{id}", CoursesController::Show);
     }
 }

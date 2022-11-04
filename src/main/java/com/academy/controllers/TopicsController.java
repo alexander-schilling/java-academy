@@ -4,6 +4,7 @@ import com.academy.models.Course;
 import com.academy.models.Topic;
 import com.academy.services.StorageService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public class TopicsController {
     /**
      * Gets topics froms storage and links each object to its relation
      */
-    public static void setupTopics() {
+    public static void setupTopics() throws SQLException {
         topics = StorageService.getTopics();
 
         linkTopicCourses();

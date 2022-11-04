@@ -3,8 +3,12 @@ package com.academy.managers;
 import com.academy.controllers.CoursesController;
 import com.academy.controllers.TopicsController;
 import com.academy.controllers.UsersController;
+import com.academy.services.DatabaseService;
 import com.academy.services.LoggerService;
+import io.github.cdimascio.dotenv.Dotenv;
 import io.javalin.event.EventListener;
+
+import java.sql.SQLException;
 
 /**
  * Handles Javalin lifecycle events.
@@ -23,11 +27,22 @@ public class EventManager {
         listener.serverStopped(EventManager::handleStopped);
     }
 
-    private static void handleStarting() {
-        LoggerService.info(EventManager.class, "Server is starting...");
+    private static void handleStarting() throws SQLException {
+        Dotenv dotenv = Dotenv.load();
+
+        LoggerService.info(EventManager.class, "Database is starting...");
+
+        DatabaseService.connect(
+                dotenv.get("DB_IP"),
+                dotenv.get("DB_NAME"),
+                dotenv.get("DB_USERNAME"),
+                dotenv.get("DB_PASSWORD")
+        );
+
+        LoggerService.info(EventManager.class, "Database connection successful!");
     }
 
-    private static void handleStarted() {
+    private static void handleStarted() throws SQLException {
         LoggerService.info(EventManager.class, "Server started!");
 
         CoursesController.setupCourses();
@@ -41,8 +56,10 @@ public class EventManager {
         ));
     }
 
-    private static void handleStopping() {
+    private static void handleStopping() throws SQLException {
         LoggerService.info(EventManager.class, "Server is stopping...");
+
+        DatabaseService.disconnect();
     }
 
     private static void handleStopped() {

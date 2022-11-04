@@ -1,7 +1,8 @@
-package com.academy.models.concerns;
+package com.academy.models.concerns.course;
 
 import com.academy.models.Course;
 import com.academy.models.Topic;
+import com.academy.models.concerns.topic.TopicBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,7 +19,9 @@ public class CourseBuilder {
         JSONObject json = new JSONObject();
 
         json.put("id", course.getId());
-        json.put("identifier", course.getIdentifier());
+        json.put("title", course.getTitle());
+        json.put("description", course.getDescription());
+        json.put("imageUrl", course.getImageUrl());
 
         JSONArray topicsJSONArray = new JSONArray();
         for (Topic topic : course.getTopics()) {

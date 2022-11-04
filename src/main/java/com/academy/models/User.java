@@ -18,6 +18,13 @@ public class User extends Person {
         this.token = token;
     }
 
+    public User(String username, String password, String firstName, String lastName, String token) {
+        super(firstName, lastName);
+        this.username = username;
+        this.password = password;
+        this.token = token;
+    }
+
     // START: Getters & Setters
 
     public String getUsername() { return username; }

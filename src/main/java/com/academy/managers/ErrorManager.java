@@ -16,4 +16,16 @@ public class ErrorManager {
                 .put("error", error)
                 .toString();
     }
+
+    /**
+     * @param error Error identifier
+     * @param errorDescription Error description
+     * @return JSON String with an error key and value
+     */
+    public static String getJSONStringResponse(String error, String errorDescription) {
+        return new JSONObject()
+                .put("error", error)
+                .put("errorDescription", errorDescription)
+                .toString();
+    }
 }

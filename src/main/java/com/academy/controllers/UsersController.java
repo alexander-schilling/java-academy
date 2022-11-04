@@ -4,11 +4,13 @@ import com.academy.configs.ErrorTypes;
 import com.academy.managers.ErrorManager;
 import com.academy.managers.TokenManager;
 import com.academy.models.User;
-import com.academy.models.concerns.UserBuilder;
+import com.academy.models.concerns.user.UserBuilder;
+import com.academy.models.concerns.user.UserPersistence;
 import com.academy.services.StorageService;
 import io.javalin.http.Context;
 import org.json.JSONObject;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -21,9 +23,21 @@ public class UsersController {
     /**
      * Gets users from storage and stores them in users variable
      */
-    public static void setupUsers() { users = StorageService.getUsers(); }
+    public static void setupUsers() throws SQLException { users = StorageService.getUsers(); }
 
-    public static void addUser(User user) { users.add(user); }
+    /**
+     * Persists the user and adds it to the list
+     * @param user user object (without id)
+     * @throws SQLException Any SQL Error
+     */
+    public static void createUser(User user) throws SQLException {
+        UserPersistence.createUser(user);
+        users.add(user);
+    }
+
+    public static void updateUser(User user) throws SQLException {
+        UserPersistence.updateUser(user);
+    }
 
     public static List<User> getUsers() { return users; }
 
@@ -83,7 +97,7 @@ public class UsersController {
 
         // Check if any field is blank
         if (username.isBlank() || password.isBlank() || firstName.isBlank() || lastName.isBlank()) {
-            context.status(200)
+            context.status(400)
                     .json(ErrorManager.getJSONStringResponse(ErrorTypes.INVALID_VALUE));
             return;
         }
@@ -91,30 +105,29 @@ public class UsersController {
         // Check if user already exists
         User user = UsersController.getUserFromUsername(username);
         if (user != null) {
-            context.status(200)
+            context.status(409)
                     .json(ErrorManager.getJSONStringResponse(ErrorTypes.USER_ALREADY_EXISTS));
             return;
         }
 
         // Check if passwords are equal
         if (!password.equals(passwordConfirmation)) {
-            context.status(200)
+            context.status(400)
                     .json(ErrorManager.getJSONStringResponse(ErrorTypes.PASSWORD_MISMATCH));
             return;
         }
 
-        // Create the new user
-        List<User> userList = UsersController.getUsers();
-        int userId = userList.size() + 1;
-        User userCreated = new User(userId, username, password, firstName, lastName);
+        // Create the new user with authentication token
+        String token = TokenManager.generateToken();
+        User userCreated = new User(username, password, firstName, lastName, token);
 
-        // Add the new user to the list
-        UsersController.addUser(userCreated);
-
-        // Generate and set the authentication token
-        userCreated.setToken(TokenManager.generateToken());
-
-        context.status(200).json(UserBuilder.toPrivateJSONObject(userCreated).toString());
+        // Add the new user to the list and database
+        try {
+            UsersController.createUser(userCreated);
+            context.status(200).json(UserBuilder.toPrivateJSONObject(userCreated).toString());
+        } catch (SQLException e) {
+            context.status(500).json(ErrorManager.getJSONStringResponse(ErrorTypes.COULD_NOT_CREATE_USER, e.toString()));
+        }
     }
 
     /**
@@ -140,20 +153,27 @@ public class UsersController {
         User user = UsersController.getUserFromUsername(username);
 
         if (user == null) {
-            context.status(200)
+            context.status(409)
                     .json(ErrorManager.getJSONStringResponse(ErrorTypes.USER_NOT_FOUND));
             return;
         }
 
         if (!user.getPassword().equals(password)) {
-            context.status(200)
+            context.status(403)
                     .json(ErrorManager.getJSONStringResponse(ErrorTypes.INVALID_PASSWORD));
             return;
         }
 
         // If login is successful, generate a token to be used in user requests
+        String previousToken = user.getToken();
         user.setToken(TokenManager.generateToken());
 
-        context.status(200).json(UserBuilder.toPrivateJSONObject(user).toString());
+        try {
+            UsersController.updateUser(user);
+            context.status(200).json(UserBuilder.toPrivateJSONObject(user).toString());
+        } catch (SQLException e) {
+            user.setToken(previousToken);
+            context.status(500).json(ErrorManager.getJSONStringResponse(ErrorTypes.COULD_NOT_LOGIN, e.toString()));
+        }
     }
 }

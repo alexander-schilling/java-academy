@@ -1,4 +1,4 @@
-package com.academy.models.concerns;
+package com.academy.models.concerns.topic;
 
 import com.academy.models.Topic;
 import org.json.JSONObject;
